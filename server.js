@@ -61,29 +61,20 @@ app.get("/", (req, res) => {
 });
 
 app.get("/menu", (req, res) => {
-  res.render("menu.ejs");
+  res.render("menu.ejs", { menu: RESTAURANT.menu });
 });
 
 app.get("/menu/:category", (req, res) => {
-  res.render("category.ejs");
-});
-
-app.get("/menu", (req, res) => {
-  res.render("menu", { menu: RESTAURANT.menu });
-});
-
-app.get("/menu/:category", (req, res) => {
-  const menuItems = RESTAURANT.menu.filter(
-    (item) => item.category.toLowerCase() === categoryParam
-  ); // Filter menu items
+  const menuItems = RESTAURANT.menu.filter((item) => item.category.toLowerCase() === req.params.category.toLowerCase()); // Filter menu items
 
   if (menuItems.length === 0) {
     return res.status(404).send("Category not found");
   }
 
-  const categoryName =
-    categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1); // Capitalize the first letter
-  res.render("category", { menuItems, categoryName }); // Send filtered data to view
+  const categoryName = req.params.category.charAt(0).toUpperCase() + req.params.category.slice(1); 
+  res.render("category.ejs", { menuItems, categoryName }); // Send filtered data to view
 });
 
-app.listen(3000);
+app.listen(3000, () => {
+  console.log("You are now connected to your Express server.")
+});
